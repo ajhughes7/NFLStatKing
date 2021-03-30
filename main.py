@@ -1,5 +1,6 @@
 import mysql.connector as mysql
 import matplotlib.pyplot as plt
+import numpy as np
 
 db = mysql.connect(
     host="localhost",
@@ -66,25 +67,34 @@ def rushDirection(offensiveTeam):
 
 
 def passType(offensiveTeam):
-    rushDirectionQuery = """SELECT DISTINCT
-        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='LEFT TACKLE') as leftTackleCount,   
-        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='LEFT GUARD') as leftGuardCount,
-        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='LEFT END') as leftEndCount,   
-        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='CENTER') as centerCount,
-        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='RIGHT GUARD') as rightGuardCount,   
-        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='RIGHT TACKLE') as rightTackleCount,
-        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='RIGHT END') as rightEndCount   
+    shortPassQuery = """SELECT DISTINCT
+        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='SHORT LEFT') as shortLeftCount,   
+        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='SHORT MIDDLE') as shortMiddleCount,   
+        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='SHORT RIGHT') as shortRightCount   
         FROM PlayByPlay2020"""
-    tuple1 = (offensiveTeam,) * 7
-    cursor.execute(rushDirectionQuery, tuple1)
-    records = list(cursor.fetchall())
+    deepPassQuery = """SELECT DISTINCT
+        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='DEEP LEFT') as deepLeftCount,
+        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='DEEP MIDDLE') as deepMiddleCount,
+        (SELECT COUNT(*) FROM PlayByPlay2020 WHERE OffenseTeam=%s && PassType='DEEP RIGHT') as deepRightCount
+        From PlayByPlay2020"""
+    tuple1 = (offensiveTeam,) * 3
+    cursor.execute(shortPassQuery, tuple1)
+    records1 = list(cursor.fetchall())
+    cursor.execute(deepPassQuery, tuple1)
+    records2 = list(cursor.fetchall())
     fig = plt.figure()
-    rushDirections = ['LEFT END', 'LEFT TACKLE', 'LEFT GUARD', 'CENTER', 'RIGHT GUARD', 'RIGHT TACKLE', 'RIGHT END']
-    plt.bar(rushDirections, records[0])
-    plt.title( f"{offensiveTeam} Rushing Directions")
-    plt.xticks(size=6)
+    w = 0.4
+    passDirections = ['LEFT', 'MIDDLE', 'RIGHT']
+    shortBar = np.arange(len(passDirections))
+    deepBar = [i+w for i in shortBar]
+    plt.bar(shortBar, records1[0], w, label="SHORT")
+    plt.bar(deepBar, records2[0], w, label="DEEP")
+    plt.title(f"{offensiveTeam} Pass Type Tendencies")
+    plt.xticks(shortBar+w/2, passDirections, size=6)
     plt.yticks(size=6)
+    plt.legend()
     return fig
+
 
 
 
@@ -112,9 +122,10 @@ def genTeamPage(fileName, nflTeam):
             <head></head>
             <body>
                 <h1>{nflTeam}</h1>
-                <p><img src="{nflTeam}_formation.svg"></img></p>
-                <p><img src="{nflTeam}_rush.svg"></img></p>
+                <p><img src="{nflTeam}_Formation.svg"></img></p>
+                <p><img src="{nflTeam}_Rush.svg"></img></p>
                 <p><img src="{nflTeam}_PassVsRun.svg"></img></p>                            
+                <p><img src="{nflTeam}_PassType.svg"></img></p>                            
             </body>
         </html>""")
     htmlFile.close()
@@ -126,16 +137,18 @@ def main():
     for nflTeam in nflTeams:
         print(nflTeam)
         genTeamPage(f"{nflTeam}.html", nflTeam)
-        formationTendencies(nflTeam).savefig(f"{nflTeam}_formation.svg", format='svg')
-        rushDirection(nflTeam).savefig(f"{nflTeam}_rush.svg", format='svg')
+        formationTendencies(nflTeam).savefig(f"{nflTeam}_Formation.svg", format='svg')
+        rushDirection(nflTeam).savefig(f"{nflTeam}_Rush.svg", format='svg')
         passVsRun(nflTeam).savefig(f"{nflTeam}_PassVsRun.svg", format='svg')
+        passType(nflTeam).savefig(f"{nflTeam}_PassType.svg", format='svg')
+
 
 main()
 
-#formationTendencies('CLE')
+#formationTendencies('PIT')
 #rushDirection('PIT')
 #passVsRun('PIT')
-
+#passType('PIT')
 
 
 
