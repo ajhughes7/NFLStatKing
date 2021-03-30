@@ -16,10 +16,9 @@ cursor = db.cursor()
         #generateTeamPage(team)
         #generateCharts(team)
 
-#nflTeams = ['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX',
-#           'KC', 'LV', 'LAC', 'LAR', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PHI', 'PIT', 'SF', 'SEA', 'TB', 'TEN',
-#            'WAS']
-nflTeams = ['ARI', 'ATL']
+nflTeams = ['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX',
+            'KC', 'LV', 'LAC', 'LA', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PHI', 'PIT', 'SF', 'SEA', 'TB', 'TEN',
+            'WAS']
 
 
 
@@ -131,38 +130,11 @@ def main():
         rushDirection(nflTeam).savefig(f"{nflTeam}_rush.svg", format='svg')
         passVsRun(nflTeam).savefig(f"{nflTeam}_PassVsRun.svg", format='svg')
 
-
-        #print(f"{nflTeam}.html")
-
-
-#rushDirection('ATL').savefig("ATL_rush.svg", format='svg')
-
 main()
 
 #formationTendencies('CLE')
 #rushDirection('PIT')
 #passVsRun('PIT')
-
-
-
-'''
-    plt.bar(rushDirections, records[0])
-    plt.title( f"{offensiveTeam} Pass vs Run")
-    plt.xticks(size=6)
-    plt.yticks(size=6)
-    plt.show()
-    #plt.savefig('test.svg', format='svg')
-
-'''
-
-
-
-
-
-
-
-
-
 
 
 
