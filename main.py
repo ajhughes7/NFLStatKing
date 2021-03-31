@@ -11,16 +11,17 @@ db = mysql.connect(
 cursor = db.cursor()
 
 
-#generateSite()
-    #generateIndexPage()
-    #for each team
-        #generateTeamPage(team)
-        #generateCharts(team)
+#generateSite()      Brandon
+    #generateIndexPage()  Brandon
+    #for each team                      Hunter
+        #generateTeamPage(team)  AJ
+        #generateCharts(team)     AJ
 
 nflTeams = ['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX',
             'KC', 'LV', 'LAC', 'LA', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PHI', 'PIT', 'SF', 'SEA', 'TB', 'TEN',
             'WAS']
 
+#nflTeams = ['PIT']
 
 
 def formationTendencies(offensiveTeam):
@@ -113,6 +114,30 @@ def passVsRun(offensiveTeam):
     plt.title(f"{offensiveTeam} Pass vs Rush")
     return fig
 
+'''
+def qbCompletions():
+    qbCompletionsQuery = """SELECT DISTINCT
+        (SELECT SUBSTRING(DESCRIPTION, 3, 6) FROM PlayByPlay2020 WHERE OffenseTeam='PIT' && PlayType='PASS') as passer,   
+        (SELECT SUBSTRING(DESCRIPTION, 3, 6) FROM PlayByPlay2020 WHERE OffenseTeam='PIT' && PlayType='RUSH') as rusher   
+        FROM PlayByPlay2020"""
+    cursor.execute(qbCompletionsQuery)
+    records = list(cursor.fetchall())
+    for record in records[0]:
+        print(record)
+'''
+
+'''
+    tuple1 = (offensiveTeam,) * 2
+
+    rushDirections = ['PASS', 'RUSH']
+    fig, ax1 = plt.subplots()
+    ax1.pie(records[0], labels=rushDirections, autopct='%.2f', startangle=90)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    plt.title(f"{offensiveTeam} Pass vs Rush")
+    return fig
+    '''
+
+
 
 def genTeamPage(fileName, nflTeam):
     htmlFile = open(fileName, "w")
@@ -130,7 +155,7 @@ def genTeamPage(fileName, nflTeam):
         </html>""")
     htmlFile.close()
 
-
+#qbCompletions()
 
 def main():
 
@@ -154,8 +179,7 @@ main()
 
 #print(records)
 
-#for record in records[0]:
-    #print(record)
+
 
 
 
